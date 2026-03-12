@@ -1,9 +1,11 @@
 import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { config } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { logger } from './utils/logger';
+import authRoutes from './routes/auth.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -20,6 +22,7 @@ export function createApp(): Application {
   // Body parsing middleware
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  app.use(cookieParser());
 
   // Request logging
   app.use((req, res, next) => {
@@ -39,8 +42,8 @@ export function createApp(): Application {
     });
   });
 
-  // API routes will be mounted here
-  // app.use('/api/auth', authRoutes);
+  // API routes
+  app.use('/api/auth', authRoutes);
   // app.use('/api/users', userRoutes);
   // app.use('/api/playlists', playlistRoutes);
   // app.use('/api/tracks', trackRoutes);
