@@ -191,6 +191,33 @@ export function PlayerProvider({ children }: { children: React.ReactNode }) {
     }
   }, [state.currentTime]);
 
+  // Track recently played
+  useEffect(() => {
+    if (state.currentTrack && typeof window !== 'undefined') {
+      const stored = localStorage.getItem('recently_played');
+      let recentlyPlayed: TrackMetadata[] = [];
+
+      if (stored) {
+        try {
+          recentlyPlayed = JSON.parse(stored);
+        } catch (error) {
+          console.error('Failed to parse recently played:', error);
+        }
+      }
+
+      // Remove if already exists (to avoid duplicates)
+      recentlyPlayed = recentlyPlayed.filter(t => t.id !== state.currentTrack!.id);
+
+      // Add to beginning
+      recentlyPlayed.unshift(state.currentTrack);
+
+      // Keep only last 50 tracks
+      recentlyPlayed = recentlyPlayed.slice(0, 50);
+
+      localStorage.setItem('recently_played', JSON.stringify(recentlyPlayed));
+    }
+  }, [state.currentTrack?.id]);
+
   // Context methods
   const playTrack = useCallback((track: TrackMetadata, queue?: TrackMetadata[]) => {
     dispatch({ type: 'PLAY_TRACK', payload: { track, queue } });
