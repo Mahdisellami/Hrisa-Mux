@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { PlayerProvider } from '@/contexts/PlayerContext';
 import { Providers } from '@/lib/providers';
+import { AudioPlayer } from '@/components/player/AudioPlayer';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -22,30 +24,33 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <AuthProvider>
-            {children}
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                className: '',
-                style: {
-                  background: '#1f2937',
-                  color: '#f9fafb',
-                  border: '1px solid #374151',
-                },
-                success: {
-                  iconTheme: {
-                    primary: '#22c55e',
-                    secondary: '#f9fafb',
+            <PlayerProvider>
+              <div className="pb-24">{children}</div>
+              <AudioPlayer />
+              <Toaster
+                position="top-right"
+                toastOptions={{
+                  className: '',
+                  style: {
+                    background: '#1f2937',
+                    color: '#f9fafb',
+                    border: '1px solid #374151',
                   },
-                },
-                error: {
-                  iconTheme: {
-                    primary: '#ef4444',
-                    secondary: '#f9fafb',
+                  success: {
+                    iconTheme: {
+                      primary: '#22c55e',
+                      secondary: '#f9fafb',
+                    },
                   },
-                },
-              }}
-            />
+                  error: {
+                    iconTheme: {
+                      primary: '#ef4444',
+                      secondary: '#f9fafb',
+                    },
+                  },
+                }}
+              />
+            </PlayerProvider>
           </AuthProvider>
         </Providers>
       </body>
