@@ -37,6 +37,12 @@ export class TrackService {
     return trackRepository.findByUploader(userId);
   }
 
+  async findBySourceId(userId: string, sourceId: string): Promise<Track | null> {
+    // Find track by source ID and user
+    const tracks = await trackRepository.findByUploader(userId);
+    return tracks.find((track) => track.sourceId === sourceId) || null;
+  }
+
   async createTrack(userId: string | undefined, input: CreateTrackInput): Promise<Track> {
     const newTrack: NewTrack = {
       title: input.title,

@@ -9,6 +9,7 @@ import authRoutes from './routes/auth.routes';
 import playlistRoutes from './routes/playlist.routes';
 import trackRoutes from './routes/track.routes';
 import uploadRoutes from './routes/upload.routes';
+import youtubeRoutes from './routes/youtube.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -50,8 +51,8 @@ export function createApp(): Application {
   app.use('/api/playlists', playlistRoutes);
   app.use('/api/tracks', trackRoutes);
   app.use('/api/upload', uploadRoutes);
+  app.use('/api/youtube', youtubeRoutes);
   // app.use('/api/users', userRoutes);
-  // app.use('/api/youtube', youtubeRoutes);
   // app.use('/api/soundcloud', soundcloudRoutes);
 
   // Error handling
