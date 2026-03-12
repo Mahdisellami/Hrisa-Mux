@@ -6,6 +6,8 @@ import { config } from './config/env';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { logger } from './utils/logger';
 import authRoutes from './routes/auth.routes';
+import playlistRoutes from './routes/playlist.routes';
+import trackRoutes from './routes/track.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -44,9 +46,9 @@ export function createApp(): Application {
 
   // API routes
   app.use('/api/auth', authRoutes);
+  app.use('/api/playlists', playlistRoutes);
+  app.use('/api/tracks', trackRoutes);
   // app.use('/api/users', userRoutes);
-  // app.use('/api/playlists', playlistRoutes);
-  // app.use('/api/tracks', trackRoutes);
   // app.use('/api/youtube', youtubeRoutes);
   // app.use('/api/soundcloud', soundcloudRoutes);
   // app.use('/api/upload', uploadRoutes);
