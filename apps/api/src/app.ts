@@ -10,6 +10,7 @@ import playlistRoutes from './routes/playlist.routes';
 import trackRoutes from './routes/track.routes';
 import uploadRoutes from './routes/upload.routes';
 import youtubeRoutes from './routes/youtube.routes';
+import soundcloudRoutes from './routes/soundcloud.routes';
 
 export function createApp(): Application {
   const app = express();
@@ -52,8 +53,8 @@ export function createApp(): Application {
   app.use('/api/tracks', trackRoutes);
   app.use('/api/upload', uploadRoutes);
   app.use('/api/youtube', youtubeRoutes);
+  app.use('/api/soundcloud', soundcloudRoutes);
   // app.use('/api/users', userRoutes);
-  // app.use('/api/soundcloud', soundcloudRoutes);
 
   // Error handling
   app.use(notFoundHandler);
