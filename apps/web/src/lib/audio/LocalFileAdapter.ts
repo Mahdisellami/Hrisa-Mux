@@ -7,13 +7,16 @@ export class LocalFileAdapter extends BaseAudioSourceAdapter {
   }
 
   async getStreamUrl(sourceId: string, metadata: TrackMetadata): Promise<string> {
-    // For local files, the sourceUrl should contain the file path or signed URL
-    if (metadata.sourceUrl) {
-      return metadata.sourceUrl;
+    // For downloaded YouTube/SoundCloud tracks, we need to stream from /api/tracks/:id/stream
+    // The metadata.id is the database track ID, not the sourceId (which is the filename)
+    const apiUrl = this.getApiUrl();
+
+    // Use the track ID from metadata to stream the file
+    if (metadata.id) {
+      return `${apiUrl}/api/tracks/${metadata.id}/stream`;
     }
 
-    // Otherwise, request a stream URL from the API
-    const apiUrl = this.getApiUrl();
+    // Fallback for legacy uploaded files
     return `${apiUrl}/api/upload/stream/${sourceId}`;
   }
 

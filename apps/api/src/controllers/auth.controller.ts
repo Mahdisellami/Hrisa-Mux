@@ -23,6 +23,14 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
+      // Also set access token as cookie (not HTTP-only) for audio streaming
+      res.cookie('accessToken', result.accessToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+
       logger.info('User registered successfully', { userId: result.user.id });
 
       res.status(201).json({
@@ -52,6 +60,14 @@ export class AuthController {
         secure: process.env.NODE_ENV === 'production',
         sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      });
+
+      // Also set access token as cookie (not HTTP-only) for audio streaming
+      res.cookie('accessToken', result.accessToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        maxAge: 15 * 60 * 1000, // 15 minutes
       });
 
       logger.info('User logged in successfully', { userId: result.user.id });
@@ -86,6 +102,14 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
       });
 
+      // Also set access token as cookie (not HTTP-only) for audio streaming
+      res.cookie('accessToken', result.accessToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+        maxAge: 15 * 60 * 1000, // 15 minutes
+      });
+
       res.status(200).json({
         status: 'success',
         data: {
@@ -107,6 +131,8 @@ export class AuthController {
 
       // Clear refresh token cookie
       res.clearCookie('refreshToken');
+      // Also clear access token cookie
+      res.clearCookie('accessToken');
 
       logger.info('User logged out successfully');
 

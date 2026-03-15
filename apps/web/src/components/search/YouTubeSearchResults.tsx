@@ -36,32 +36,63 @@ export function YouTubeSearchResults({ results, isLoading }: YouTubeSearchResult
     },
   });
 
+  const playFromSearchMutation = useMutation({
+    mutationFn: (videoId: string) => youtubeApi.addToLibrary(videoId),
+    onSuccess: (track) => {
+      // Mark as added
+      setAddedTracks((prev) => new Set(prev).add(track.sourceUrl?.split('v=')[1] || ''));
+
+      // Convert the track to TrackMetadata and play it
+      const trackMetadata: TrackMetadata = {
+        id: track.id,
+        title: track.title,
+        artist: track.artist,
+        album: track.album,
+        duration: track.duration,
+        thumbnailUrl: track.thumbnailUrl,
+        sourceType: track.sourceType,
+        sourceId: track.sourceId,
+        sourceUrl: track.sourceUrl,
+      };
+
+      playTrack(trackMetadata);
+      toast.success('Playing from library');
+    },
+    onError: (error: any) => {
+      if (error.response?.status === 409) {
+        // Track already exists, get it from library and play
+        const existingTrack = error.response?.data?.data;
+        if (existingTrack) {
+          const trackMetadata: TrackMetadata = {
+            id: existingTrack.id,
+            title: existingTrack.title,
+            artist: existingTrack.artist,
+            album: existingTrack.album,
+            duration: existingTrack.duration,
+            thumbnailUrl: existingTrack.thumbnailUrl,
+            sourceType: existingTrack.sourceType,
+            sourceId: existingTrack.sourceId,
+            sourceUrl: existingTrack.sourceUrl,
+          };
+          playTrack(trackMetadata);
+          toast.success('Playing from library');
+        } else {
+          toast.error('Track already in library');
+        }
+      } else {
+        toast.error(error.response?.data?.error || 'Failed to play track');
+      }
+    },
+  });
+
   const handlePlay = (result: YouTubeSearchResult) => {
-    const trackMetadata: TrackMetadata = {
-      id: result.id,
-      title: result.title,
-      artist: result.artist,
-      album: undefined,
-      duration: result.duration,
-      thumbnailUrl: result.thumbnailUrl,
-      sourceType: 'youtube',
-      sourceId: result.id,
-      sourceUrl: `https://www.youtube.com/watch?v=${result.id}`,
-    };
-
-    // Play this track with the search results as queue
-    const queue = results.map((r) => ({
-      id: r.id,
-      title: r.title,
-      artist: r.artist,
-      duration: r.duration,
-      thumbnailUrl: r.thumbnailUrl,
-      sourceType: 'youtube' as const,
-      sourceId: r.id,
-      sourceUrl: `https://www.youtube.com/watch?v=${r.id}`,
-    }));
-
-    playTrack(trackMetadata, queue);
+    // Download to library first, then play
+    toast.loading('Downloading track...', { id: 'download-' + result.id });
+    playFromSearchMutation.mutate(result.id, {
+      onSettled: () => {
+        toast.dismiss('download-' + result.id);
+      },
+    });
   };
 
   const handleAddToLibrary = (videoId: string) => {
