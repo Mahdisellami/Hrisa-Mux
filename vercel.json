@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "cd apps/web && pnpm install && pnpm run build",
+  "devCommand": "cd apps/web && pnpm run dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "outputDirectory": "apps/web/.next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://hrisa-mux-api.onrender.com"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_API_URL": "https://hrisa-mux-api.onrender.com"
+    }
+  }
+}
