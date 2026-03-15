@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Home, Search, Music, ListMusic, Upload, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -64,7 +65,7 @@ export function Sidebar() {
           const Icon = item.icon;
 
           return (
-            <a
+            <Link
               key={item.name}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
@@ -75,7 +76,7 @@ export function Sidebar() {
             >
               <Icon className="w-5 h-5" />
               <span className="font-medium">{item.name}</span>
-            </a>
+            </Link>
           );
         })}
       </nav>
@@ -104,5 +105,6 @@ export function Sidebar() {
         </button>
       </div>
     </div>
+    </>
   );
 }

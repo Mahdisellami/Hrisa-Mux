@@ -12,15 +12,9 @@ export default function DashboardLayout({
   const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    // Redirect to login if not authenticated (except for public pages)
+    // Redirect to login if not authenticated
     if (!isLoading && !isAuthenticated) {
-      const publicPaths = ['/login', '/register'];
-      if (!publicPaths.includes(window.location.pathname)) {
-        // Don't redirect from home page as it has its own auth handling
-        if (window.location.pathname !== '/home') {
-          window.location.href = '/login';
-        }
-      }
+      window.location.href = '/login';
     }
   }, [isAuthenticated, isLoading]);
 

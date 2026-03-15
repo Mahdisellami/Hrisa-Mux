@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:24-slim AS base
 RUN corepack enable pnpm
 
 FROM base AS dependencies
@@ -22,6 +22,7 @@ ENV NODE_ENV=production
 COPY --from=builder /app/apps/api/dist ./apps/api/dist
 COPY --from=builder /app/apps/api/package.json ./apps/api/
 COPY --from=dependencies /app/node_modules ./node_modules
+COPY --from=dependencies /app/apps/api/node_modules ./apps/api/node_modules
 
 WORKDIR /app/apps/api
 EXPOSE 3001

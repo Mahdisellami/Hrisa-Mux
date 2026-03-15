@@ -17,6 +17,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hrisa-mux-network
 
   redis:
     image: redis:7-alpine
@@ -30,9 +32,69 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - hrisa-mux-network
+
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.api
+    container_name: hrisa-mux-api
+    environment:
+      NODE_ENV: development
+      API_PORT: 3001
+      API_URL: http://localhost:3001
+      WEB_URL: http://localhost:3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hrisa_mux
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret-change-in-production
+      JWT_EXPIRES_IN: 15m
+      REFRESH_TOKEN_SECRET: dev-refresh-token-secret-change-in-production
+      REFRESH_TOKEN_EXPIRES_IN: 7d
+      STORAGE_TYPE: local
+      MAX_FILE_SIZE: 104857600
+      ALLOWED_FILE_TYPES: audio/mpeg,audio/mp4,audio/flac,audio/wav,audio/ogg
+      CORS_ORIGIN: http://localhost:3000
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX_REQUESTS: 100
+      CACHE_TTL_YOUTUBE: 1800
+      CACHE_TTL_SOUNDCLOUD: 1800
+      CACHE_TTL_METADATA: 3600
+    ports:
+      - "3001:3001"
+    volumes:
+      - ../apps/api/uploads:/app/apps/api/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - hrisa-mux-network
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    container_name: hrisa-mux-web
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    networks:
+      - hrisa-mux-network
+    restart: unless-stopped
 
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
+
+networks:
+  hrisa-mux-network:
+    driver: bridge

@@ -39,7 +39,12 @@ class ApiClient {
         const originalRequest = error.config;
 
         // If error is 401 and we haven't retried yet, try to refresh token
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // BUT don't retry if the failed request was the refresh endpoint itself
+        if (
+          error.response?.status === 401 &&
+          !originalRequest._retry &&
+          !originalRequest.url?.includes('/auth/refresh')
+        ) {
           originalRequest._retry = true;
 
           try {
@@ -52,11 +57,8 @@ class ApiClient {
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
             return this.client(originalRequest);
           } catch (refreshError) {
-            // Refresh failed, clear token and redirect to login
+            // Refresh failed, clear token and do nothing (don't redirect on initial load)
             this.clearAccessToken();
-            if (typeof window !== 'undefined') {
-              window.location.href = '/login';
-            }
             return Promise.reject(refreshError);
           }
         }
