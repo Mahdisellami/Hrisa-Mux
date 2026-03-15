@@ -32,6 +32,9 @@ importers:
       '@distube/ytdl-core':
         specifier: ^4.14.4
         version: 4.16.12
+      '@types/node':
+        specifier: ^20.11.24
+        version: 20.19.37
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1
@@ -80,6 +83,9 @@ importers:
       soundcloud-scraper:
         specifier: ^5.0.3
         version: 5.0.3
+      typescript:
+        specifier: ^5.4.2
+        version: 5.9.3
       undici:
         specifier: ^7.2.0
         version: 7.23.0
@@ -114,9 +120,6 @@ importers:
       '@types/multer':
         specifier: ^1.4.11
         version: 1.4.13
-      '@types/node':
-        specifier: ^20.11.24
-        version: 20.19.37
       '@types/pg':
         specifier: ^8.11.0
         version: 8.18.0
@@ -147,9 +150,6 @@ importers:
       tsx:
         specifier: ^4.7.1
         version: 4.21.0
-      typescript:
-        specifier: ^5.4.2
-        version: 5.9.3
 
   apps/web:
     dependencies:
@@ -9273,7 +9273,6 @@ packages:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
     engines: {node: '>=14.17'}
     hasBin: true
-    dev: true
 
   /uglify-js@3.19.3:
     resolution: {integrity: sha512-v3Xu+yuwBXisp6QYTcH4UbH+xYJXqnq2m/LtQVWKWzYc1iehYnLixoQDN9FH6/j9/oybfd6W9Ghwkl8+UMKTKQ==}
