@@ -40,6 +40,8 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.api
     container_name: hrisa-mux-api
+    env_file:
+      - .env
     environment:
       NODE_ENV: development
       API_PORT: 3001
@@ -47,19 +49,6 @@ services:
       WEB_URL: http://localhost:3000
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/hrisa_mux
       REDIS_URL: redis://redis:6379
-      JWT_SECRET: dev-jwt-secret-change-in-production
-      JWT_EXPIRES_IN: 15m
-      REFRESH_TOKEN_SECRET: dev-refresh-token-secret-change-in-production
-      REFRESH_TOKEN_EXPIRES_IN: 7d
-      STORAGE_TYPE: local
-      MAX_FILE_SIZE: 104857600
-      ALLOWED_FILE_TYPES: audio/mpeg,audio/mp4,audio/flac,audio/wav,audio/ogg
-      CORS_ORIGIN: http://localhost:3000
-      RATE_LIMIT_WINDOW_MS: 900000
-      RATE_LIMIT_MAX_REQUESTS: 100
-      CACHE_TTL_YOUTUBE: 1800
-      CACHE_TTL_SOUNDCLOUD: 1800
-      CACHE_TTL_METADATA: 3600
     ports:
       - "3001:3001"
     volumes:

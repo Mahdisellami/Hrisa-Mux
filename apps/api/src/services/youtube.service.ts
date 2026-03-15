@@ -40,7 +40,8 @@ export class YouTubeService {
    */
   async search(query: string, maxResults: number = 20): Promise<YouTubeSearchResult[]> {
     if (!this.youtube) {
-      throw new Error('YouTube API key not configured');
+      logger.warn('YouTube API key not configured - returning empty results');
+      return [];
     }
 
     const cacheKey = `youtube:search:${query}:${maxResults}`;
@@ -163,7 +164,8 @@ export class YouTubeService {
    */
   async getVideoMetadata(videoId: string): Promise<YouTubeSearchResult | null> {
     if (!this.youtube) {
-      throw new Error('YouTube API key not configured');
+      logger.warn('YouTube API key not configured');
+      return null;
     }
 
     const cacheKey = `youtube:metadata:${videoId}`;

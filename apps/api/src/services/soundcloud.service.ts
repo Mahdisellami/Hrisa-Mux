@@ -20,12 +20,14 @@ export interface SoundCloudStreamInfo {
 }
 
 export class SoundCloudService {
-  private client: SoundCloud.Client;
+  private client: SoundCloud.Client | null = null;
   private redisService: RedisService;
 
   constructor() {
     const clientId = config.soundcloud.clientId;
-    this.client = new SoundCloud.Client(clientId);
+    if (clientId) {
+      this.client = new SoundCloud.Client(clientId);
+    }
     this.redisService = RedisService.getInstance();
   }
 
@@ -33,6 +35,11 @@ export class SoundCloudService {
    * Search for tracks on SoundCloud
    */
   async search(query: string, maxResults: number = 20): Promise<SoundCloudSearchResult[]> {
+    if (!this.client) {
+      logger.warn('SoundCloud client ID not configured - returning empty results');
+      return [];
+    }
+
     const cacheKey = `soundcloud:search:${query}:${maxResults}`;
 
     // Check cache first
@@ -87,6 +94,10 @@ export class SoundCloudService {
    * Get stream URL for a SoundCloud track
    */
   async getStreamUrl(trackId: string): Promise<SoundCloudStreamInfo> {
+    if (!this.client) {
+      throw new Error('SoundCloud client ID not configured');
+    }
+
     const cacheKey = `soundcloud:stream:${trackId}`;
 
     // Check cache first
@@ -133,6 +144,11 @@ export class SoundCloudService {
    * Get track metadata
    */
   async getTrackMetadata(trackId: string): Promise<SoundCloudSearchResult | null> {
+    if (!this.client) {
+      logger.warn('SoundCloud client ID not configured');
+      return null;
+    }
+
     const cacheKey = `soundcloud:metadata:${trackId}`;
 
     // Check cache first
@@ -194,6 +210,11 @@ export class SoundCloudService {
    * Get track by URL (convenience method)
    */
   async getTrackByUrl(url: string): Promise<SoundCloudSearchResult | null> {
+    if (!this.client) {
+      logger.warn('SoundCloud client ID not configured');
+      return null;
+    }
+
     try {
       const track = await this.client.getSongInfo(url);
 
