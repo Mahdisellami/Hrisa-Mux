@@ -30,7 +30,7 @@ importers:
         specifier: ^3.525.0
         version: 3.1007.0
       '@distube/ytdl-core':
-        specifier: ^4.16.12
+        specifier: ^4.14.4
         version: 4.16.12
       bcrypt:
         specifier: ^5.1.1
@@ -80,15 +80,15 @@ importers:
       soundcloud-scraper:
         specifier: ^5.0.3
         version: 5.0.3
+      undici:
+        specifier: ^7.2.0
+        version: 7.23.0
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
       winston:
         specifier: ^3.12.0
         version: 3.19.0
-      ytdl-core:
-        specifier: ^4.11.5
-        version: 4.11.5
       zod:
         specifier: ^3.22.4
         version: 3.25.76
@@ -9608,15 +9608,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
     dev: true
-
-  /ytdl-core@4.11.5:
-    resolution: {integrity: sha512-27LwsW4n4nyNviRCO1hmr8Wr5J1wLLMawHCQvH8Fk0hiRqrxuIu028WzbJetiYH28K8XDbeinYW4/wcHQD1EXA==}
-    engines: {node: '>=12'}
-    dependencies:
-      m3u8stream: 0.8.6
-      miniget: 4.2.3
-      sax: 1.5.0
-    dev: false
 
   /zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { youtubeService } from '../services/youtube.service';
 import { trackService } from '../services/track.service';
+import { downloadService } from '../services/download.service';
 import { logger } from '../utils/logger';
 import { z } from 'zod';
 
@@ -129,22 +130,29 @@ class YouTubeController {
         });
       }
 
-      // Create track in database
+      // Download MP3 file
+      logger.info('Downloading YouTube audio', { userId, videoId });
+      const downloadResult = await downloadService.downloadYouTube(videoId);
+
+      // Create track in database with local file path
       const track = await trackService.createTrack(userId, {
         title: title || metadata!.title,
         artist: artist || metadata!.artist,
         album: undefined,
         duration: metadata!.duration,
-        sourceType: 'youtube',
-        sourceId: videoId,
+        sourceType: 'local', // Changed from 'youtube' to 'local'
+        sourceId: downloadResult.fileName, // Store filename instead of videoId
         sourceUrl: `https://www.youtube.com/watch?v=${videoId}`,
         thumbnailUrl: metadata!.thumbnailUrl,
         metadata: {
           viewCount: metadata!.viewCount,
+          originalSource: 'youtube',
+          youtubeVideoId: videoId,
+          fileSize: downloadResult.fileSize,
         },
       });
 
-      logger.info('YouTube track added to library', { userId, videoId, trackId: track.id });
+      logger.info('YouTube track added to library', { userId, videoId, trackId: track.id, fileName: downloadResult.fileName });
 
       res.status(201).json({
         success: true,

@@ -35,6 +35,9 @@ router.get('/search', trackController.searchTracks.bind(trackController));
 
 router.get('/:id', trackController.getTrack.bind(trackController));
 
+// Stream track (requires authentication)
+router.get('/:id/stream', authenticate, trackController.streamTrack.bind(trackController));
+
 // Protected routes
 router.get('/me/library', authenticate, trackController.getUserTracks.bind(trackController));
 

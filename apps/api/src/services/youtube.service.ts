@@ -117,7 +117,9 @@ export class YouTubeService {
     }
 
     try {
-      const info = await ytdl.getInfo(videoId);
+      const info = await ytdl.getInfo(videoId, {
+        lang: 'en',
+      });
 
       // Get the best audio format
       const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');

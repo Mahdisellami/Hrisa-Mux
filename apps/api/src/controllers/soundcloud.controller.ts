@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { soundcloudService } from '../services/soundcloud.service';
 import { trackService } from '../services/track.service';
+import { downloadService } from '../services/download.service';
 import { logger } from '../utils/logger';
 import { z } from 'zod';
 
@@ -160,22 +161,32 @@ class SoundCloudController {
         });
       }
 
-      // Create track in database
+      // Construct SoundCloud URL for downloading
+      const soundcloudUrl = `https://soundcloud.com/${trackId}`;
+
+      // Download MP3 file
+      logger.info('Downloading SoundCloud audio', { userId, trackId });
+      const downloadResult = await downloadService.downloadSoundCloud(soundcloudUrl);
+
+      // Create track in database with local file path
       const track = await trackService.createTrack(userId, {
         title: title || metadata!.title,
         artist: artist || metadata!.artist,
         album: undefined,
         duration: metadata!.duration,
-        sourceType: 'soundcloud',
-        sourceId: trackId,
-        sourceUrl: `https://soundcloud.com/${trackId}`,
+        sourceType: 'local', // Changed from 'soundcloud' to 'local'
+        sourceId: downloadResult.fileName, // Store filename instead of trackId
+        sourceUrl: soundcloudUrl,
         thumbnailUrl: metadata!.thumbnailUrl,
         metadata: {
           playCount: metadata!.playCount,
+          originalSource: 'soundcloud',
+          soundcloudTrackId: trackId,
+          fileSize: downloadResult.fileSize,
         },
       });
 
-      logger.info('SoundCloud track added to library', { userId, trackId, trackId: track.id });
+      logger.info('SoundCloud track added to library', { userId, trackId, trackDbId: track.id, fileName: downloadResult.fileName });
 
       res.status(201).json({
         success: true,
