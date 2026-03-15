@@ -14,13 +14,9 @@ services:
       - key: API_PORT
         value: 3001
       - key: DATABASE_URL
-        fromDatabase:
-          name: hrisa-mux-db
-          property: connectionString
+        sync: false
       - key: REDIS_URL
-        fromDatabase:
-          name: hrisa-mux-redis
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_REFRESH_SECRET
@@ -28,14 +24,3 @@ services:
       - key: YOUTUBE_API_KEY
         sync: false
     healthCheckPath: /health
-
-# Database
-databases:
-  - name: hrisa-mux-db
-    databaseName: hrisa_mux
-    plan: free
-    region: frankfurt
-
-  - name: hrisa-mux-redis
-    plan: free
-    region: frankfurt
